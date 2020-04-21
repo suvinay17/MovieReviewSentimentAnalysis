@@ -3,7 +3,7 @@ import numpy as np
 #import string
 #import itertools
 
-"""from keras.datasets import imdb
+from keras.datasets import imdb
 (x_train, y_train), (x_test, y_test) = imdb.load_data(path="imdb.npz",
                                                       num_words=None,
                                                       skip_top=0,
@@ -12,6 +12,8 @@ import numpy as np
                                                       start_char=1,
                                                       oov_char=2,
                                                       index_from=3)
+print(x_train)
+"""
 from sklearn.svm import SVC, LinearSVC
 from sklearn.model_selection import StratifiedKFold, GridSearchCV
 from sklearn import metrics
