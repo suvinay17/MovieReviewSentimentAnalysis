@@ -12,7 +12,12 @@ from keras.datasets import imdb
                                                       start_char=1,
                                                       oov_char=2,
                                                       index_from=3)
-print(x_train)
+path = get_file('imdb_full.pkl',
+               origin='https://s3.amazonaws.com/text-datasets/imdb_full.pkl',
+                md5_hash='d091312047c43cf9e4e38fef92437263')
+f = open(path, 'rb')
+(training_data, training_labels), (test_data, test_labels) = pickle.load(f)
+print(training_data)
 """
 from sklearn.svm import SVC, LinearSVC
 from sklearn.model_selection import StratifiedKFold, GridSearchCV
@@ -62,16 +67,3 @@ def generate_feature_matrix(df, word_dict):
         index = index + 1
 
     return feature_matrix"""
-def get_word_index(path='imdb_word_index.json'):
-    """Retrieves the dictionary mapping words to word indices.
-    # Arguments
-        path: where to cache the data (relative to `~/.keras/dataset`).
-    # Returns
-        The word index dictionary.
-    """
-    path = get_file(
-        path,
-        origin='https://s3.amazonaws.com/text-datasets/imdb_word_index.json',
-        file_hash='bfafd718b763782e994055a2d397834f')
-    with open(path) as f:
-        return json.load(f)
