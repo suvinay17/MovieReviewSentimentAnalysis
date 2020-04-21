@@ -62,3 +62,16 @@ def generate_feature_matrix(df, word_dict):
         index = index + 1
 
     return feature_matrix"""
+def get_word_index(path='imdb_word_index.json'):
+    """Retrieves the dictionary mapping words to word indices.
+    # Arguments
+        path: where to cache the data (relative to `~/.keras/dataset`).
+    # Returns
+        The word index dictionary.
+    """
+    path = get_file(
+        path,
+        origin='https://s3.amazonaws.com/text-datasets/imdb_word_index.json',
+        file_hash='bfafd718b763782e994055a2d397834f')
+    with open(path) as f:
+        return json.load(f)
