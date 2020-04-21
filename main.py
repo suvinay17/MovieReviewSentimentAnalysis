@@ -1,9 +1,9 @@
 import numpy as np
-import pandas as pd
-import string
-import itertools
+#import pandas as pd
+#import string
+#import itertools
 
-from keras.datasets import imdb
+"""from keras.datasets import imdb
 (x_train, y_train), (x_test, y_test) = imdb.load_data(path="imdb.npz",
                                                       num_words=None,
                                                       skip_top=0,
@@ -59,4 +59,4 @@ def generate_feature_matrix(df, word_dict):
 
         index = index + 1
 
-    return feature_matrix
+    return feature_matrix"""
