@@ -2,6 +2,31 @@ import numpy as np
 #import pandas as pd
 #import string
 #import itertools
+import glob
+import os
+
+#This code is for reading the multiple files in one folder into a list
+# read neg files in train folder
+neg_files = glob.glob(os.path.join(os.getcwd(), "data/train/neg", "*.txt"))
+
+neg_list = []
+
+for neg_path in neg_files:
+    with open(neg_path) as neg_input:
+        neg_list.append(neg_input.read())
+#test purpose
+print(len(neg_list)) 
+
+# read pos files in train folder
+pos_files = glob.glob(os.path.join(os.getcwd(), "data/train/pos", "*.txt"))
+
+pos_list = []
+
+for pos_path in pos_files:
+    with open(pos_path) as pos_input:
+        pos_list.append(pos_input.read())
+#test purpose
+print(len(pos_list)) 
 
 from keras.datasets import imdb
 (x_train, y_train), (x_test, y_test) = imdb.load_data(path="imdb.npz",
@@ -18,6 +43,7 @@ path = get_file('imdb_full.pkl',
 f = open(path, 'rb')
 (training_data, training_labels), (test_data, test_labels) = pickle.load(f)
 print(training_data)
+
 """
 from sklearn.svm import SVC, LinearSVC
 from sklearn.model_selection import StratifiedKFold, GridSearchCV
