@@ -28,21 +28,6 @@ for pos_path in pos_files:
 #test purpose
 print(len(pos_list)) 
 
-from keras.datasets import imdb
-(x_train, y_train), (x_test, y_test) = imdb.load_data(path="imdb.npz",
-                                                      num_words=None,
-                                                      skip_top=0,
-                                                      maxlen=None,
-                                                      seed=113,
-                                                      start_char=1,
-                                                      oov_char=2,
-                                                      index_from=3)
-path = get_file('imdb_full.pkl',
-               origin='https://s3.amazonaws.com/text-datasets/imdb_full.pkl',
-                md5_hash='d091312047c43cf9e4e38fef92437263')
-f = open(path, 'rb')
-(training_data, training_labels), (test_data, test_labels) = pickle.load(f)
-print(training_data)
 
 """
 from sklearn.svm import SVC, LinearSVC
