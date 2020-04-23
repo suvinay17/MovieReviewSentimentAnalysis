@@ -52,8 +52,9 @@ def extract_dictionary():
         index = index + 1
     # for loop to iterate over words array
         for split in splits:
-            word_dict[split] = ind
-            ind = ind + 1
+            if split not in word_dict:
+                word_dict[split] = ind
+                ind = ind + 1
     index = 0
 
     while(index < 1): # len(neg_list)):
@@ -63,8 +64,9 @@ def extract_dictionary():
         splits = neg_list[index].split()
         # for loop to iterate over words array
         for split in splits:
-             word_dict[split] = ind
-             ind = ind + 1
+             if split not in word_dict:
+                word_dict[split] = ind
+                ind = ind + 1
         index = index +1
     # for testing
     print(len(neg_list[0]) + len(pos_list[0]))
@@ -73,7 +75,7 @@ def extract_dictionary():
 
 
 hm = extract_dictionary()
-print(len(hm))
+
 
 
 def select_classifier(penalty='l2', c=1.0, degree=1, r=0.0, class_weight='balanced'):
@@ -96,21 +98,30 @@ def generate_feature_matrix(hm):
     number_of_words = len(hm)
     feature_matrix = np.zeros((number_of_reviews, number_of_words))
     # refer to https://docs.scipy.org/doc/numpy/reference/generated/numpy.zeros.html
-
+    # testCount = 0
     index = 0
     while(index < 1):
         for word in pos_list[index].split(" "):
-            if word in hm and (hm[word] < feature_matrix[index].size) :
+            if word in hm:
                 feature_matrix[index][hm[word]] = 1
-            index = index + 1
+                # testCount = testCount + 1
+        index = index + 1
+    old_index = index + 0
     index = 0
+    # print("first test")
+    # print(testCount)
     while(index < 1):
         for word in neg_list[index].split(" "):
-            if word in hm and (hm[word] < feature_matrix[index].size) :
-                feature_matrix[index][hm[word]] = 1
-            index = index + 1
-        print(feature_matrix[0][43])
-        return feature_matrix
+            if word in hm:
+                feature_matrix[old_index][hm[word]] = 1
+                print(word)
+                # testCount = testCount + 1
+        index = index + 1
+        old_index = index + 1
+        # print("second test")
+        # print(testCount)
+    #gprint(feature_matrix[1][58])
+    return feature_matrix
 
 
 generate_feature_matrix(hm)
