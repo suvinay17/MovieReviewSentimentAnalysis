@@ -140,10 +140,10 @@ def normalized_wf_feature_matrix(hm):
         for word in pos_list[index].split(" "):
             wordCount = wordCount + 1
             if word in hm:
-                feature_matrix[index][hm[word]] = feature_matrix[index][hm[word]] + 1
+                feature_matrix[index][hm[word]] = (feature_matrix[index][hm[word]] + 1)
                 # testCount = testCount + 1
         for i in range(0 , number_of_words):
-            feature_matrix[index][i] = feature_matrix[index][i] / wordCount
+            feature_matrix[index][i] = float(feature_matrix[index][i] / wordCount)
 
         index = index + 1
     old_index = index + 0
@@ -159,7 +159,7 @@ def normalized_wf_feature_matrix(hm):
                 # print(word)
                 # testCount = testCount + 1
         for i in range (0 ,number_of_words):
-            feature_matrix[index][i] = (feature_matrix[index][i] / wordCount)
+            feature_matrix[old_index][i] = float(feature_matrix[old_index][i] / wordCount)
         index = index + 1
         old_index = index + 1
         # print("second test")
