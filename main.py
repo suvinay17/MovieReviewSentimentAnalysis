@@ -17,19 +17,25 @@ neg_list = []
 for neg_path in neg_files:
     with open(neg_path) as neg_input:
         neg_list.append(neg_input.read())
-#test purpose
-#print(neg_list[1])
-
 # read pos files in train folder
 pos_files = glob.glob(os.path.join(os.getcwd(), "data/train/pos", "*.txt"))
 pos_list = []
 for pos_path in pos_files:
     with open(pos_path) as pos_input:
         pos_list.append(pos_input.read())
-#test purpose
-#print(len(pos_list))
 number_of_reviews = len(pos_list)+len(neg_list)
-
+# read pos files in test folder
+posTest_files = glob.glob(os.path.join(os.getcwd(), "data/test/pos", "*.txt"))
+pos_test = []
+for posTest_path in posTest_files:
+    with open(posTest_path) as posTest_input:
+        pos_test.append(posTest_input.read())
+# read neg files in test folder
+negTest_files = glob.glob(os.path.join(os.getcwd(), "data/test/neg", "*.txt"))
+neg_test = []
+for negTest_path in negTest_files:
+    with open(negTest_path) as negTest_input:
+        neg_test.append(negTest_input.read())
 
 def extract_dictionary():
     """
@@ -40,7 +46,6 @@ def extract_dictionary():
         to a unique index corresponding to when it was first found
 
     """
-    print(neg_list[0])
     index = 0
     ind = 0
     word_dict = {}
@@ -69,13 +74,11 @@ def extract_dictionary():
                 ind = ind + 1
         index = index +1
     # for testing
-    print(len(neg_list[0]) + len(pos_list[0]))
+    #print(len(neg_list[0]) + len(pos_list[0]))
     # print(neg_list[0])
     return word_dict
 
-
 hm = extract_dictionary()
-
 
 
 def select_classifier(penalty='l2', c=1.0, degree=1, r=0.0, class_weight='balanced'):
@@ -92,8 +95,8 @@ def bag_of_words_feature_matrix(hm):
 # Reads the set of unique words to generate a matrix of {1, 0} feature vectors for each review.
 # The resulting feature matrix should be of dimension (number of reviews, number of words).
 # Returns:
-# a matrix of size (number of reviews * number of words)
-
+# a matrix of size (number of reviews * number of words) (for TRAIN data set)
+    number_of_reviews = len(pos_list) + len(neg_list)
     number_of_words = len(hm)
     feature_matrix = np.zeros((number_of_reviews, number_of_words))
     # refer to https://docs.scipy.org/doc/numpy/reference/generated/numpy.zeros.html
@@ -117,11 +120,44 @@ def bag_of_words_feature_matrix(hm):
                 # testCount = testCount + 1
         index = index + 1
         old_index = index + 1
-        # print("second test")
+        print("second test")
         # print(testCount)
     # print(feature_matrix[1][58])
     return feature_matrix
 
+def feature_matrix_test(hm):
+# Reads the set of unique words to generate a matrix of {1, 0} feature vectors for each review.
+# The resulting feature matrix should be of dimension (number of reviews, number of words).
+# Returns:
+# a matrix of size (number of reviews * number of words) (for TEST data set)
+    number_of_reviews = len(pos_test) + len(neg_test)
+    number_of_words = len(hm)
+    feature_matrix = np.zeros((number_of_reviews, number_of_words))
+    # refer to https://docs.scipy.org/doc/numpy/reference/generated/numpy.zeros.html
+    # testCount = 0
+    index = 0
+    while index < 1 :
+        for word in pos_test[index].split(" "):
+            if word in hm:
+                feature_matrix[index][hm[word]] = 1
+                # testCount = testCount + 1
+        index = index + 1
+    old_index = index + 0
+    index = 0
+    print("first test")
+    # print(testCount)
+    while(index < 1):
+        for word in neg_test[index].split(" "):
+            if word in hm:
+                feature_matrix[old_index][hm[word]] = 1
+                # print(word)
+                # testCount = testCount + 1
+        index = index + 1
+        old_index = index + 1
+        # print("second test")
+        # print(testCount)
+    # print(feature_matrix[1][58])
+    return feature_matrix
 
 def normalized_wf_feature_matrix(hm):
 # Reads the set of unique words to generate a matrix of normalized word frequency which is the number
@@ -164,9 +200,31 @@ def normalized_wf_feature_matrix(hm):
         old_index = index + 1
         # print("second test")
         # print(testCount)
-    print(feature_matrix[1][58])
+    #print(feature_matrix[1][58])
     print(wordCount)
     return feature_matrix
+
+
+def split_binary_data():
+    """
+    Reads in the data and returns it using
+    extract_dictionary and bag_of_words_feature_matrix split into training and test sets.
+    Also returns the dictionary used to create the feature matrices.
+    """
+    Y_train = []
+    Y_test = []
+    for n in range(len(neg_list)):
+        Y_train.append(-1)
+    for p in range(len(pos_list)):
+        Y_train.append(1)
+    for i in range(len(neg_test)):
+        Y_test.append(-1)
+    for j in range(len(pos_list)):
+        Y_test.append(1)
+    X_train = bag_of_words_feature_matrix(hm)
+    X_test = feature_matrix_test(hm)
+    return (X_train, Y_train, X_test, Y_test)
+
 
 def cv_performance(clf, X, y, k=5, metric="accuracy"):
     """
@@ -328,6 +386,8 @@ def performance(y_true, y_pred, metric="accuracy"):
     return -1
 
 bag_of_words_feature_matrix(hm)
+feature_matrix_test(hm)
+split_binary_data()
 normalized_wf_feature_matrix(hm)
 
 
