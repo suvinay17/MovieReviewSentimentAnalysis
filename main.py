@@ -213,14 +213,14 @@ def split_binary_data():
     """
     Y_train = []
     Y_test = []
-    for n in range(len(neg_list)):
-        Y_train.append(-1)
     for p in range(len(pos_list)):
         Y_train.append(1)
+    for n in range(len(neg_list)):
+        Y_train.append(-1)
+    for j in range(len(pos_test)):
+        Y_test.append(1)
     for i in range(len(neg_test)):
         Y_test.append(-1)
-    for j in range(len(pos_list)):
-        Y_test.append(1)
     X_train = bag_of_words_feature_matrix(hm)
     X_test = feature_matrix_test(hm)
     return (X_train, Y_train, X_test, Y_test)
