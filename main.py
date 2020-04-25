@@ -158,7 +158,7 @@ def normalized_wf_feature_matrix(hm):
                 feature_matrix[old_index][hm[word]] = feature_matrix[index][hm[word]] + 1
                 # print(word)
                 # testCount = testCount + 1
-        for i in range (0 ,number_of_words):
+        for i in range (0 , number_of_words):
             feature_matrix[old_index][i] = float(feature_matrix[old_index][i] / wordCount)
         index = index + 1
         old_index = index + 1
