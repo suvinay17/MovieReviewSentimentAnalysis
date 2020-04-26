@@ -211,18 +211,21 @@ def get_split_binary_data():
     extract_dictionary and bag_of_words_feature_matrix split into training and test sets.
     Also returns the dictionary used to create the feature matrices.
     """
-    Y_train = []
-    Y_test = []
+    y_train = []
+    y_test = []
     for p in range(len(pos_list)):
-        Y_train.append(1)
+        y_train.append(1)
     for n in range(len(neg_list)):
-        Y_train.append(-1)
+        y_train.append(-1)
     for j in range(len(pos_test)):
-        Y_test.append(1)
+        y_test.append(1)
     for i in range(len(neg_test)):
-        Y_test.append(-1)
+        y_test.append(-1)
     X_train = bag_of_words_feature_matrix(hm)
     X_test = feature_matrix_test(hm)
+    Y_train = np.array(y_train)
+    Y_test =np.array(y_test)
+    #print(type(Y_test))
     return (X_train, Y_train, X_test, Y_test, hm)
 
 
