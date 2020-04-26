@@ -49,7 +49,7 @@ def extract_dictionary():
     index = 0
     ind = 0
     word_dict = {}
-    while(index <  1): # len(pos_list)):
+    while(index <  1250): # len(pos_list)):
         regex = re.compile(r'[^a-zA-Z ]+')
         pos_list[index] = re.sub(regex, '', pos_list[index]).lower()
         # split string
@@ -62,7 +62,7 @@ def extract_dictionary():
                 ind = ind + 1
     index = 0
 
-    while(index < 1): # len(neg_list)):
+    while(index < 1250): # len(neg_list)):
         regex = re.compile(r'[^a-zA-Z ]+')
         neg_list[index] = re.sub(regex, '', neg_list[index]).lower()
         # split string
@@ -102,7 +102,7 @@ def bag_of_words_feature_matrix(hm):
     # refer to https://docs.scipy.org/doc/numpy/reference/generated/numpy.zeros.html
     # testCount = 0
     index = 0
-    while index < 1 :
+    while index < 1259 :
         for word in pos_list[index].split(" "):
             if word in hm:
                 feature_matrix[index][hm[word]] = 1
@@ -112,7 +112,7 @@ def bag_of_words_feature_matrix(hm):
     index = 0
     # print("first test")
     # print(testCount)
-    while(index < 1):
+    while(index < 1250):
         for word in neg_list[index].split(" "):
             if word in hm:
                 feature_matrix[old_index][hm[word]] = 1
@@ -120,7 +120,7 @@ def bag_of_words_feature_matrix(hm):
                 # testCount = testCount + 1
         index = index + 1
         old_index = index + 1
-        print("second test")
+        # print("second test")
         # print(testCount)
     # print(feature_matrix[1][58])
     return feature_matrix
@@ -136,7 +136,7 @@ def feature_matrix_test(hm):
     # refer to https://docs.scipy.org/doc/numpy/reference/generated/numpy.zeros.html
     # testCount = 0
     index = 0
-    while index < 1 :
+    while index < 1250 :
         for word in pos_test[index].split(" "):
             if word in hm:
                 feature_matrix[index][hm[word]] = 1
@@ -146,7 +146,7 @@ def feature_matrix_test(hm):
     index = 0
     print("first test")
     # print(testCount)
-    while(index < 1):
+    while(index < 1250):
         for word in neg_test[index].split(" "):
             if word in hm:
                 feature_matrix[old_index][hm[word]] = 1
@@ -201,11 +201,11 @@ def normalized_wf_feature_matrix(hm):
         # print("second test")
         # print(testCount)
     #print(feature_matrix[1][58])
-    print(wordCount)
+    #print(wordCount)
     return feature_matrix
 
 
-def split_binary_data():
+def get_split_binary_data():
     """
     Reads in the data and returns it using
     extract_dictionary and bag_of_words_feature_matrix split into training and test sets.
@@ -223,7 +223,7 @@ def split_binary_data():
         Y_test.append(-1)
     X_train = bag_of_words_feature_matrix(hm)
     X_test = feature_matrix_test(hm)
-    return (X_train, Y_train, X_test, Y_test)
+    return (X_train, Y_train, X_test, Y_test, hm)
 
 
 def cv_performance(clf, X, y, k=5, metric="accuracy"):
@@ -385,10 +385,48 @@ def performance(y_true, y_pred, metric="accuracy"):
 
     return -1
 
-bag_of_words_feature_matrix(hm)
-feature_matrix_test(hm)
-split_binary_data()
-normalized_wf_feature_matrix(hm)
+
+def main():
+    X_train, Y_train, X_test, Y_test, dictionary_binary = get_split_binary_data()
+    column_sums = X_train.sum(axis=1)
+    total = 0
+    for col in column_sums:
+        total += col
+    print(total / X_train.shape[0])
+
+    clf = SVC(C=1.0, kernel='linear')
+   # print(cv_performance(clf, X_train, Y_train))
+    C = []
+    for x in range(-3, 4):
+        C.append(10 ** x)
+    print(select_param_linear(X_train, Y_train, C_range=C))
+
+
+    metrics = ["accuracy", "f1-score", "auroc", "precision", "sensitivity", "specificity"]
+
+    for metric in metrics:
+        C = []
+        for x in range(-3, 4):
+            C.append(10 ** x)
+
+        c, score = select_param_linear(X_train, Y_train, C_range=C, metric=metric)
+        print(metric + " : " + str(c) + " , " + str(score))
+
+    # Accuracy, because takes into account False Positives and False Negatives
+
+    # 3.1 d).
+    # svc = SVC(C=0.1, kernel='linear', degree=1, class_weight='balanced')
+    # for metric in metrics:
+    #     svc.fit(X_train, Y_train)
+    #     if metric != "auroc":
+    #         Y_predicted = svc.predict(X_test)
+    #     else:
+    #         Y_predicted = svc.decision_function(X_test)
+    #
+    #     score = performance(Y_test, Y_predicted, metric)
+    #     print(metric + " : " + str(score))
+
+main()
 
 
 
