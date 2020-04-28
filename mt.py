@@ -14,7 +14,8 @@ import glob
 import os
 import re
 
-REVIEWS=1000
+REVIEWS=500
+
 def extract_data(folder_path):
     """
     This method extracts data from a folder, reading each file,
@@ -42,7 +43,6 @@ def extract_data(folder_path):
     return reviews
 
 def extract_dictionary(reviews, word_dict, ind=0):
-
     """
     Reads list of distinct words
     mapping from each distinct word to its index .
@@ -51,13 +51,12 @@ def extract_dictionary(reviews, word_dict, ind=0):
         to a unique index corresponding to when it was first found
 
     """
-    for i in range(len(reviews)): # len(reviews)
-      
-      splits = reviews[i].split()
-      for split in splits:
-          if split not in word_dict:
-              word_dict[split] = ind
-              ind += 1
+    for i in range(len(reviews)):
+        splits = reviews[i].split()
+        for word in splits:
+            if word not in word_dict:
+                word_dict[word] = ind
+                ind += 1
 
     return (word_dict, ind)
 
@@ -77,7 +76,6 @@ def bag_of_words_feature_matrix(hm, pos_list, neg_list):
 # a matrix of size (number of reviews * number of words) (for TRAIN data set)
 
     feature_matrix = np.zeros((len(pos_list) + len(neg_list), len(hm)))
-    
     # refer to https://docs.scipy.org/doc/numpy/reference/generated/numpy.zeros.html
 
     for i in range(len(pos_list)):
@@ -128,7 +126,7 @@ def normalized_wf_feature_matrix(hm, pos_list, neg_list):
 
     return feature_matrix
 
-def get_split_binary_data(hm, pos_list, neg_list, pos_test, neg_test):
+def get_split_binary_data(hm, hm_test, pos_list, neg_list, pos_test, neg_test):
     """
     Reads in the data and returns it using
     extract_dictionary and bag_of_words_feature_matrix split into training and test sets.
@@ -146,7 +144,7 @@ def get_split_binary_data(hm, pos_list, neg_list, pos_test, neg_test):
         y_test.append(-1)
 
     X_train = bag_of_words_feature_matrix(hm, pos_list, neg_list)
-    X_test = bag_of_words_feature_matrix(hm, pos_test, neg_test)
+    X_test = bag_of_words_feature_matrix(hm_test, pos_test, neg_test)
 
     Y_train = np.array(y_train)
     Y_test = np.array(y_test)

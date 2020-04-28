@@ -10,20 +10,23 @@ import glob
 import os
 import re
 #Import helper methods
-import mt
+from mt import *
 #This code is for reading the multiple files in one folder into a list
 # read neg files in train folder
-pos_train= mt.extract_data("data/train/pos")
-neg_train = mt.extract_data("data/train/neg")
-pos_test = mt.extract_data("data/test/pos")
-neg_test = mt.extract_data("data/test/neg")
+pos_train= extract_data("data/train/pos")
+neg_train = extract_data("data/train/neg")
+pos_test = extract_data("data/test/pos")
+neg_test = extract_data("data/test/neg")
 
 # Extracts dictionary
-out = mt.extract_dictionary(pos_train, {})
-hm = mt.extract_dictionary(neg_train, out[0], out[1])[0]
+out = extract_dictionary(pos_train, {})
+hm = extract_dictionary(neg_train, out[0], out[1])[0]
+
+out_test = extract_dictionary(pos_test, {})
+hm_test = extract_dictionary(neg_test, out_test[0], out_test[1])[0]
 
 X_train, Y_train, X_test, Y_test, dictionary_binary =\
-    mt.get_split_binary_data(hm, pos_train, neg_train, pos_test, neg_test)
+    get_split_binary_data(hm, hm_test, pos_train, neg_train, pos_test, neg_test)
 
 column_sums = X_train.sum(axis=1)
 total = 0
@@ -32,12 +35,14 @@ for col in column_sums:
 print(total / X_train.shape[0])
 
 clf = SVC(C=1.0, kernel='linear')
-# print(cv_performance(clf, X_train, Y_train))
+print("cv Performance")
+print(cv_performance(clf, X_train, Y_train))
+print("end")
 C = []
 for x in range(-3, 4):
     C.append(10 ** x)
 print("First print")
-print(mt.select_param_linear(X_train, Y_train, C_range=C))
+print(select_param_linear(X_train, Y_train, C_range=C))
 
 metrics = ["accuracy", "f1-score", "auroc", "precision", "sensitivity", "specificity"]
 
@@ -46,7 +51,7 @@ for metric in metrics:
     for x in range(-3, 4):
         C.append(10 ** x)
 
-    c, score = mt.select_param_linear(X_train, Y_train, C_range=C, metric=metric)
+    c, score = select_param_linear(X_train, Y_train, C_range=C, metric=metric)
     print(metric + " : " + str(c) + " , " + str(score))
 
   # Accuracy, because takes into account False Positives and False Negatives

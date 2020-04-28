@@ -3,13 +3,22 @@ import numpy as np
 
 pos_train = mt.extract_data("data/train/pos")
 neg_train = mt.extract_data("data/train/neg")
+pos_test = mt.extract_data("data/test/pos")
+neg_test = mt.extract_data("data/test/")
 
-i = 0
+for i in range(len(pos_train)):
+    for j in range(len(pos_test)):
+        if pos_train[i] == pos_test[i]:
+            print(True)
+            
+
+"""
 for review in pos_train:
     print(str(i) + "-------")
     print(review)
     print("\n")
     i+=1
+    """
 
 
 out = mt.extract_dictionary(pos_train, {})
