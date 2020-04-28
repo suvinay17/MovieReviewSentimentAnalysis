@@ -23,7 +23,6 @@ out = extract_dictionary(pos_train, {})
 hm = extract_dictionary(neg_train, out[0], out[1])[0]
 
 X_train, Y_train, X_test, Y_test, dictionary_binary =\
-
 get_split_binary_data(hm, pos_train, neg_train, pos_test, neg_test)
 
 
@@ -33,11 +32,11 @@ for col in column_sums:
     total += col
 print(total / X_train.shape[0])
 
-clf = SVC(C=1.0, kernel='linear')
-print("cv Performance")
-print(cv_performance(clf, X_test, Y_test))
-print("end")
-C = []
+#clf = SVC(C=1.0, kernel='linear')
+#print("cv Performance")
+#print(cv_performance(clf, X_test, Y_test))
+#print("end")
+#C = []
 #for x in range(-3, 4):
    # C.append(10 ** x)
 #print("First print")
@@ -50,21 +49,21 @@ metrics = ["accuracy", "f1-score", "auroc", "precision", "sensitivity", "specifi
    # c, score = select_param_linear(X_train, Y_train, C_range=C, metric=metric)
    # print(metric + " : " + str(c) + " , " + str(score))
 
-"""
-for metric in metrics:
-    C = []
-    for x in range(-3, 4):
-        C.append(10 ** x)
 
-    c, score = select_param_linear(X_train, Y_train, C_range=C, metric=metric)
-    print(metric + " : " + str(c) + " , " + str(score))
->>>>>>> 6f906d6b884d505f8fa4d203f642cc39975a1756
-
-"""
-  # Accuracy, because takes into account False Positives and False Negatives
+#for metric in metrics:
+#    C = []
+#    for x in range(-3, 4):
+ #       C.append(10 ** x)
+#
+ #   c, score = select_param_linear(X_test, Y_test, C_range=C, metric=metric)
+  #  print(metric + " : " + str(c) + " , " + str(score))
 
 
-svc = SVC(C=0.1, kernel='linear', degree=1, class_weight='balanced')
+
+# Accuracy, because takes into account False Positives and False Negatives
+
+
+svc = SVC(C=0.01, kernel='linear', degree=1, class_weight='balanced')
 for metric in metrics:
     svc.fit(X_train, Y_train)
     if metric != "auroc":
