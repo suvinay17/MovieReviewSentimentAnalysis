@@ -14,7 +14,7 @@ import glob
 import os
 import re
 
-REVIEWS=1000
+REVIEWS=50
 
 def extract_data(folder_path):
     """
