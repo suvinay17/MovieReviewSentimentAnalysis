@@ -26,7 +26,7 @@ out_test = extract_dictionary(pos_test, {})
 hm_test = extract_dictionary(neg_test, out_test[0], out_test[1])[0]
 
 X_train, Y_train, X_test, Y_test, dictionary_binary =\
-    get_split_binary_data(hm, hm_test, pos_train, neg_train, pos_test, neg_test)
+    get_split_binary_data(hm, hm_gtest, pos_train, neg_train, pos_test, neg_test)
 
 column_sums = X_train.sum(axis=1)
 total = 0
@@ -39,31 +39,27 @@ print("cv Performance")
 print(cv_performance(clf, X_train, Y_train))
 print("end")
 C = []
-for x in range(-3, 4):
-    C.append(10 ** x)
-print("First print")
-print(select_param_linear(X_train, Y_train, C_range=C))
+#for x in range(-3, 4):
+   # C.append(10 ** x)
+#print("First print")
+#print(select_param_linear(X_train, Y_train, C_range=C))
 
 metrics = ["accuracy", "f1-score", "auroc", "precision", "sensitivity", "specificity"]
 
-for metric in metrics:
-    C = []
-    for x in range(-3, 4):
-        C.append(10 ** x)
-
-    c, score = select_param_linear(X_train, Y_train, C_range=C, metric=metric)
-    print(metric + " : " + str(c) + " , " + str(score))
+#for metric in metrics:
+   # c, score = select_param_linear(X_train, Y_train, C_range=C, metric=metric)
+   # print(metric + " : " + str(c) + " , " + str(score))
 
   # Accuracy, because takes into account False Positives and False Negatives
 
-  # 3.1 d).
-  # svc = SVC(C=0.1, kernel='linear', degree=1, class_weight='balanced')
-  # for metric in metrics:
-  #     svc.fit(X_train, Y_train)
-  #     if metric != "auroc":
-  #         Y_predicted = svc.predict(X_test)
-  #     else:
-  #         Y_predicted = svc.decision_function(X_test)
-  #
-  #     score = performance(Y_test, Y_predicted, metric)
-  #     print(metric + " : " + str(score))
+
+svc = SVC(C=0.1, kernel='linear', degree=1, class_weight='balanced')
+for metric in metrics:
+    svc.fit(X_train, Y_train)
+    if metric != "auroc":
+        Y_predicted = svc.predict(X_test)
+    else:
+        Y_predicted = svc.decision_function(X_test)
+
+    score = performance(Y_test, Y_predicted, metric)
+    print(metric + " : " + str(score))
