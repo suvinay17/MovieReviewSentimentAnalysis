@@ -25,7 +25,6 @@ hm = extract_dictionary(neg_train, positive[0], positive[1])[0]
 X_train, Y_train, X_test, Y_test, dictionary_binary =\
 get_split_binary_data(hm, pos_train, neg_train, pos_test, neg_test)
 
-
 column_sums = X_train.sum(axis=1)
 total = 0
 for col in column_sums:
@@ -33,7 +32,7 @@ for col in column_sums:
 print(total / X_train.shape[0])
 
 #clf = SVC(C=1.0, kernel='linear')
-#print("cv Performance")
+print("cv Performance")
 #print(cv_performance(clf, X_test, Y_test))
 #print("end")
 #C = []
