@@ -14,7 +14,9 @@ import glob
 import os
 import re
 
-REVIEWS= 500
+
+REVIEWS=1000
+
 
 def extract_data(folder_path):
     """
@@ -88,6 +90,7 @@ def bag_of_words_feature_matrix(hm, pos_list, neg_list):
         for word in neg_list[i].split(" "):
             if word in hm:
                 feature_matrix[index][hm[word]] = 1
+
     return feature_matrix
 
 def normalized_wf_feature_matrix(hm, pos_list, neg_list):
@@ -126,7 +129,7 @@ def normalized_wf_feature_matrix(hm, pos_list, neg_list):
 
     return feature_matrix
 
-def get_split_binary_data(hm, hm_test, pos_list, neg_list, pos_test, neg_test):
+def get_split_binary_data(hm, pos_list, neg_list, pos_test, neg_test):
     """
     Reads in the data and returns it using
     extract_dictionary and bag_of_words_feature_matrix split into training and test sets.
@@ -144,7 +147,7 @@ def get_split_binary_data(hm, hm_test, pos_list, neg_list, pos_test, neg_test):
         y_test.append(-1)
 
     X_train = bag_of_words_feature_matrix(hm, pos_list, neg_list)
-    X_test = bag_of_words_feature_matrix(hm_test, pos_test, neg_test)
+    X_test = bag_of_words_feature_matrix(hm, pos_test, neg_test)
 
     Y_train = np.array(y_train)
     Y_test = np.array(y_test)
