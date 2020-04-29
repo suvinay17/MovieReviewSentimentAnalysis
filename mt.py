@@ -109,7 +109,7 @@ def normalized_wf_feature_matrix(hm, pos_list, neg_list):
             if word in hm:
                 feature_matrix[i][hm[word]] += 1
 
-        for j in range(number_of_words):
+        for j in range(len(pos_list[i].split())):
             feature_matrix[i][j] /= wordCount
 
         index = i
@@ -121,7 +121,7 @@ def normalized_wf_feature_matrix(hm, pos_list, neg_list):
             if word in hm:
                 feature_matrix[index][hm[word]] += 1
 
-        for j in range(number_of_words):
+        for j in range(len(neg_list[i].split())):
             feature_matrix[index][j] /= wordCount
         index +=1 
 
@@ -144,8 +144,8 @@ def get_split_binary_data(hm, pos_list, neg_list, pos_test, neg_test):
     for i in range(len(neg_test)):
         y_test.append(-1)
 
-    X_train = bag_of_words_feature_matrix(hm, pos_list, neg_list)
-    X_test = bag_of_words_feature_matrix(hm, pos_test, neg_test)
+    X_train = normalized_wf_feature_matrix(hm, pos_list, neg_list)
+    X_test = normalized_wf_feature_matrix(hm, pos_test, neg_test)
 
     Y_train = np.array(y_train)
     Y_test = np.array(y_test)
