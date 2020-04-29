@@ -19,8 +19,8 @@ pos_test = extract_data("data/test/pos")
 neg_test = extract_data("data/test/neg")
 
 # Extracts dictionary
-positive = extract_dictionary(pos_train, {})
-hm = extract_dictionary(neg_train, positive[0], positive[1])[0]
+positive = extract_dictionary(neg_train, {})
+hm = extract_dictionary(pos_train, positive[0], positive[1])[0]
 
 X_train, Y_train, X_test, Y_test, dictionary_binary =\
 get_split_binary_data(hm, pos_train, neg_train, pos_test, neg_test)
@@ -43,11 +43,9 @@ print("cv Performance")
 
 metrics = ["accuracy", "f1-score", "auroc", "precision", "sensitivity", "specificity"]
 
-
 #for metric in metrics:
    # c, score = select_param_linear(X_train, Y_train, C_range=C, metric=metric)
    # print(metric + " : " + str(c) + " , " + str(score))
-
 
 #for metric in metrics:
 #    C = []
@@ -57,10 +55,7 @@ metrics = ["accuracy", "f1-score", "auroc", "precision", "sensitivity", "specifi
  #   c, score = select_param_linear(X_test, Y_test, C_range=C, metric=metric)
   #  print(metric + " : " + str(c) + " , " + str(score))
 
-
-
 # Accuracy, because takes into account False Positives and False Negatives
-
 
 svc = SVC(C=0.01, kernel='linear', degree=1, class_weight='balanced')
 for metric in metrics:
