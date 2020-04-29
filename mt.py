@@ -14,7 +14,7 @@ import glob
 import os
 import re
 
-REVIEWS=500
+REVIEWS = 50
 
 def extract_data(folder_path):
     """
@@ -119,7 +119,7 @@ def normalized_wf_feature_matrix(hm, pos_list, neg_list):
         for word in neg_list[i].split(" "):
             wordCount += 1
             if word in hm:
-                feature_matrix[indexi][hm[word]] += 1
+                feature_matrix[index][hm[word]] += 1
 
         for j in range(number_of_words):
             feature_matrix[index][j] /= wordCount

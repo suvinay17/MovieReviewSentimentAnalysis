@@ -16,7 +16,7 @@ from mt import *
 pos_train= extract_data("data/train/pos")
 neg_train = extract_data("data/train/neg")
 pos_test = extract_data("data/test/pos")
-neg_test = extract_data("data/test/neg")
+neg_test = extract_madata("data/test/neg")
 
 # Extracts dictionary
 positive = extract_dictionary(pos_train, {})
@@ -33,7 +33,7 @@ print(total / X_train.shape[0])
 
 #clf = SVC(C=1.0, kernel='linear')
 print("cv Performance")
-#print(cv_performance(clf, X_test, Y_test))
+#print(cv_performance(clf, X_train, Y_train))
 #print("end")
 #C = []
 #for x in range(-3, 4):
@@ -62,7 +62,7 @@ metrics = ["accuracy", "f1-score", "auroc", "precision", "sensitivity", "specifi
 # Accuracy, because takes into account False Positives and False Negatives
 
 
-svc = SVC(C=3, kernel='linear', degree=1, class_weight='balanced')
+svc = SVC(C=0.0001, kernel='linear', degree=1, class_weight='balanced')
 for metric in metrics:
     svc.fit(X_train, Y_train)
     if metric != "auroc":
@@ -71,3 +71,4 @@ for metric in metrics:
         Y_predicted = svc.decision_function(X_test)
     score = performance(Y_test, Y_predicted, metric)
     print(metric + " : " + str(score))
+
