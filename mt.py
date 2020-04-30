@@ -1,4 +1,4 @@
-# File that contains all methods to
+# mt.py containt contains all methods to
 # run sentiment analysis on our data
 
 # Import necessary libraries
@@ -15,14 +15,16 @@ import os
 import re
 import math
 
+# Number of reviews
+# For testing purposes mainly
 REVIEWS = 500
 
 def extract_data(folder_path):
     """
-    This method extracts data from a folder, reading each file,
+    this method extracts data from a folder, reading each file,
     preprocessing it by getting rid of nonewords and appending
     it to a list.
-    Returns the list
+    returns the list
     """
     reviews = []
 
@@ -41,6 +43,11 @@ def extract_data(folder_path):
     return reviews[:REVIEWS]
 
 def extract_data_no_caps(folder_path):
+    """
+    this method does the same job as extract_data() but
+    also removes words with a capital so as to remove
+    Names
+    """
 
     reviews = []
 
@@ -86,6 +93,8 @@ def extract_dictionary(reviews, word_dict, ind=0):
 
     """
 
+    # Comment out to leave stop words in
+    # Comment out also in for loop
     stop_words = get_stop_words()
 
     for review in reviews:
@@ -162,6 +171,8 @@ def normalized_wf_feature_matrix(hm, pos_list, neg_list):
         index +=1 
 
     return feature_matrix
+
+def now():
 
 def tf_idf_feature_matrix(hm, pos_list, neg_list):
 # Reads the set of unique words to generate a matrix of normalized word frequency which is the number
@@ -393,5 +404,3 @@ def performance(y_true, y_pred, metric="accuracy"):
         return confusion_matrix[1][1] / (confusion_matrix[1][0] + confusion_matrix[1][1])
 
     return -1
-
-

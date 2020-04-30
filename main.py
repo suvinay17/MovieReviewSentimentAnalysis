@@ -77,4 +77,3 @@ for metric in metrics:
         Y_predicted = svc.decision_function(X_test)
     score = performance(Y_test, Y_predicted, metric)
     print(metric + " : " + str(score))
-
