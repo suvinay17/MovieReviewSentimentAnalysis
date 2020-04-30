@@ -15,7 +15,7 @@ import os
 import re
 import math
 
-REVIEWS = 4
+REVIEWS = 500
 
 def extract_data(folder_path):
     """

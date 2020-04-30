@@ -13,10 +13,20 @@ import re
 from mt import *
 #This code is for reading the multiple files in one folder into a list
 # read neg files in train folder
+# Comment out which kind of data extraction we want
+# First one does not remove names
+"""
 pos_train= extract_data("data/train/pos")
 neg_train = extract_data("data/train/neg")
 pos_test = extract_data("data/test/pos")
 neg_test = extract_data("data/test/neg")
+"""
+
+# This one removes names of people
+pos_train= extract_data_no_caps("data/train/pos")
+neg_train = extract_data_no_caps("data/train/neg")
+pos_test = extract_data_no_caps("data/test/pos")
+neg_test = extract_data_no_caps("data/test/neg")
 
 # Extracts dictionary
 hm = extract_dictionary(neg_train, {})
