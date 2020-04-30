@@ -122,6 +122,58 @@ def normalized_wf_feature_matrix(hm, pos_list, neg_list):
 
     return feature_matrix
 
+def tf_idf_feature_matrix(hm, pos_list, neg_list):
+# Reads the set of unique words to generate a matrix of normalized word frequency which is the number
+# Of times a word occurs divided by the length of the review
+# The resulting feature matrix should be of dimension (number of reviews, number of words).
+# Returns:
+# a matrix of size (number of reviews * number of words)
+
+    feature_matrix = np.zeros((len(pos_list) + len(neg_list), len(hm)))
+    # refer to https://docs.scipy.org/doc/numpy/reference/generated/numpy.zeros.html
+    # testCount = 0
+    N = REVIEWS * 2
+    tf = np.zeros((len(pos_list) + len(neg_list), len(hm)))
+    df_dict = {}
+
+    for i in range(len(pos_list)):
+        for word in pos_list[i].split(" "):
+            if word in hm:
+                if tf[i][hm[word]] == 0:
+                    tf[i][hm[word]] = 1
+                    if word not in df_dict:
+                        df_dict[word] = 1
+                    else:
+                        df_dict[word] += 1
+                else:
+                    tf[i][hm[word]] += 1
+
+    for i in range(len(neg_list)):
+        for word in neg_list[i].split(" "):
+            if word in hm:
+                 if tf[i+ len(pos_list)][hm[word]] == 0:
+                    tf[i+len(pos_list)][hm[word]] = 1
+                    if word not in df_dict:
+                        df_dict[word] = 1
+                    else:
+                        df_dict[word] += 1
+                 else:
+                    tf[i+len(pos_list)][hm[word]] +=  1
+    visited = []
+    for i in range(len(pos_list)):
+        for word in pos_list[i].split(" "):
+            if word not in visited:
+                visited.append(word)
+                if word in hm and word in df_dict:
+                    feature_matrix[i][hm[word]] = tf[i][hm[word]]*math.log2(N/df_dict[word])
+    for i in range(len(neg_list)):
+        for word in neg_list[i].split(" "):
+            if word not in visited:
+                visited.append(word)
+                if word in hm and word in df_dict:
+                    feature_matrix[i+len(pos_list)][hm[word]] = tf[i+len(pos_list)][hm[word]]*math.log2(N/df_dict[word])
+    return feature_matrix
+
 def get_split_binary_data(hm, pos_list, neg_list, pos_test, neg_test):
     """
     Reads in the data and returns it using
@@ -302,54 +354,3 @@ def performance(y_true, y_pred, metric="accuracy"):
     return -1
 
 
-def tf_idf_feature_matrix(hm, pos_list, neg_list):
-# Reads the set of unique words to generate a matrix of normalized word frequency which is the number
-# Of times a word occurs divided by the length of the review
-# The resulting feature matrix should be of dimension (number of reviews, number of words).
-# Returns:
-# a matrix of size (number of reviews * number of words)
-
-    feature_matrix = np.zeros((len(pos_list) + len(neg_list), len(hm)))
-    # refer to https://docs.scipy.org/doc/numpy/reference/generated/numpy.zeros.html
-    # testCount = 0
-    N = REVIEWS * 2
-    tf = np.zeros((len(pos_list) + len(neg_list), len(hm)))
-    df_dict = {}
-
-    for i in range(len(pos_list)):
-        for word in pos_list[i].split(" "):
-            if word in hm:
-                if tf[i][hm[word]] == 0:
-                    tf[i][hm[word]] = 1
-                    if word not in df_dict:
-                        df_dict[word] = 1
-                    else:
-                        df_dict[word] += 1
-                else:
-                    tf[i][hm[word]] += 1
-
-    for i in range(len(neg_list)):
-        for word in neg_list[i].split(" "):
-            if word in hm:
-                 if tf[i+ len(pos_list)][hm[word]] == 0:
-                    tf[i+len(pos_list)][hm[word]] = 1
-                    if word not in df_dict:
-                        df_dict[word] = 1
-                    else:
-                        df_dict[word] += 1
-                 else:
-                    tf[i+len(pos_list)][hm[word]] +=  1
-    visited = []
-    for i in range(len(pos_list)):
-        for word in pos_list[i].split(" "):
-            if word not in visited:
-                visited.append(word)
-                if word in hm and word in df_dict:
-                    feature_matrix[i][hm[word]] = tf[i][hm[word]]*math.log2(N/df_dict[word])
-    for i in range(len(neg_list)):
-        for word in neg_list[i].split(" "):
-            if word not in visited:
-                visited.append(word)
-                if word in hm and word in df_dict:
-                    feature_matrix[i+len(pos_list)][hm[word]] = tf[i+len(pos_list)][hm[word]]*math.log2(N/df_dict[word])
-    return feature_matrix
