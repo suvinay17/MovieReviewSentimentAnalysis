@@ -19,8 +19,8 @@ pos_test = extract_data("data/test/pos")
 neg_test = extract_data("data/test/neg")
 
 # Extracts dictionary
-positive = extract_dictionary(neg_train, {})
-hm = extract_dictionary(pos_train, positive[0], positive[1])[0]
+hm = extract_dictionary(neg_train, {})
+hm = extract_dictionary(pos_train, hm[0], hm[1])[0]
 
 X_train, Y_train, X_test, Y_test, dictionary_binary =\
 get_split_binary_data(hm, pos_train, neg_train, pos_test, neg_test)
