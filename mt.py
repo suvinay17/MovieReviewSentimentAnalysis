@@ -24,24 +24,21 @@ def extract_data(folder_path):
     it to a list.
     Returns the list
     """
+    reviews = []
+
     # Read in files 
     files = glob.glob(os.path.join(os.getcwd(), folder_path, "*.txt"))
 
-    reviews = []
-    for path in files:
-      with open(path) as text:
-          reviews.append(text.read())
-
-    # Clean data
+    # Clean data at the same time
     REPLACE_NO_SPACE = re.compile("[.;:!\'?,\"()\[\]]")
     REPLACE_WITH_SPACE = re.compile("(<br\s*/><br\s*/>)|(\-)|(\/)")
 
-    reviews = [REPLACE_NO_SPACE.sub("", line.lower()) for line in reviews]
-    reviews = [REPLACE_WITH_SPACE.sub(" ", line) for line in reviews]
+    for path in files:
+      with open(path) as text:
+          review = REPLACE_NO_SPACE.sub("", text.read().lower())
+          reviews.append(REPLACE_WITH_SPACE.sub(" ", review))
 
-    reviews = reviews[:REVIEWS]
-
-    return reviews
+    return reviews[:REVIEWS]
 
 def extract_dictionary(reviews, word_dict, ind=0):
     """
@@ -52,8 +49,8 @@ def extract_dictionary(reviews, word_dict, ind=0):
         to a unique index corresponding to when it was first found
 
     """
-    for i in range(len(reviews)):
-        splits = reviews[i].split()
+    for review in reviews:
+        splits = review.split()
         for word in splits:
             if word not in word_dict:
                 word_dict[word] = ind
@@ -76,15 +73,14 @@ def bag_of_words_feature_matrix(hm, pos_list, neg_list):
 # Returns:
 # a matrix of size (number of reviews * number of words) (for TRAIN data set)
 
-    feature_matrix = np.zeros((len(pos_list) + len(neg_list), len(hm)))
     # refer to https://docs.scipy.org/doc/numpy/reference/generated/numpy.zeros.html
-    feature_matrix = bow(hm, feature_matrix, pos_list)
+    feature_matrix = bow(hm, np.zeros((len(pos_list) + len(neg_list), len(hm))), pos_list)
     return bow(hm, feature_matrix, neg_list, index=len(pos_list))
 
 def bow(hm, fm, l, index=0):
 
-    for i in range(len(l)):
-        for word in l[i].split(" "):
+    for review in l:
+        for word in review.split(" "):
             if word in hm:
                 fm[index][hm[word]] = 1
         index += 1
