@@ -16,7 +16,7 @@ from mt import *
 pos_train= extract_data("data/train/pos")
 neg_train = extract_data("data/train/neg")
 pos_test = extract_data("data/test/pos")
-neg_test = extract_madata("data/test/neg")
+neg_test = extract_data("data/test/neg")
 
 # Extracts dictionary
 positive = extract_dictionary(neg_train, {})
