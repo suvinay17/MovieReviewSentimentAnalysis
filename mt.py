@@ -15,7 +15,7 @@ import os
 import re
 import math
 
-REVIEWS = 50
+REVIEWS = 4
 
 def extract_data(folder_path):
     """
@@ -40,6 +40,42 @@ def extract_data(folder_path):
 
     return reviews[:REVIEWS]
 
+def extract_data_no_caps(folder_path):
+
+    reviews = []
+
+    # Read in files 
+    files = glob.glob(os.path.join(os.getcwd(), folder_path, "*.txt"))
+
+    # Clean data at the same time
+    REPLACE_NO_SPACE = re.compile("[;:\',\"()\[\]]")
+    REPLACE_WITH_SPACE = re.compile("(<br\s*/><br\s*/>)|(\-)|(\/)")
+
+    for path in files:
+      with open(path) as text:
+          review = REPLACE_NO_SPACE.sub("", text.read())
+          reviews.append(REPLACE_WITH_SPACE.sub(" ", review))
+
+    output = []
+    REPLACE_NO_END = re.compile("[.!?]")
+    for review in reviews:
+        cleaned = ""
+        words = review.split()
+        for i in range(len(words)):
+            if i == 0:
+                cleaned += words[i]
+                cleaned += " "
+            elif words[i].islower():
+                cleaned += words[i]
+                cleaned += " "
+            elif words[i].isupper() and words[i - 1] == ".":
+                cleaned += words[i]
+                cleaned += " "
+        
+        output.append(REPLACE_NO_END.sub("", cleaned.lower()))
+
+    return output[:REVIEWS]
+
 def extract_dictionary(reviews, word_dict, ind=0):
     """
     Reads list of distinct words
@@ -49,13 +85,19 @@ def extract_dictionary(reviews, word_dict, ind=0):
         to a unique index corresponding to when it was first found
 
     """
+
+    stop_words = get_stop_words()
+
     for review in reviews:
         for word in review.split():
-            if word not in word_dict:
+            if word not in word_dict and word not in stop_words:
                 word_dict[word] = ind
                 ind += 1
 
     return (word_dict, ind)
+
+def get_stop_words():
+    return [word[:-1] for word in open("stopwords.txt")]
 
 def select_classifier(penalty='l2', c=1.0, degree=1, r=0.0, class_weight='balanced'):
 # Refer to https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html
