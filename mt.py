@@ -50,8 +50,7 @@ def extract_dictionary(reviews, word_dict, ind=0):
 
     """
     for review in reviews:
-        splits = review.split()
-        for word in splits:
+        for word in review.split():
             if word not in word_dict:
                 word_dict[word] = ind
                 ind += 1
