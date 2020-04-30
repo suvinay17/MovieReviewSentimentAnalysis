@@ -68,7 +68,7 @@ metrics = ["accuracy", "f1-score", "auroc", "precision", "sensitivity", "specifi
 # Accuracy, because takes into account False Positives and False Negatives
 
 
-svc = SVC(C=0.01, kernel='linear', degree=1, class_weight='balanced')
+svc = SVC(C=0.1, kernel='linear', degree=1, class_weight='balanced')
 for metric in metrics:
     svc.fit(X_train, Y_train)
     if metric != "auroc":
