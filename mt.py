@@ -17,7 +17,7 @@ import math
 
 # Number of reviews
 # For testing purposes mainly
-REVIEWS = 500
+REVIEWS = 2500
 
 def extract_data(folder_path):
     """
@@ -95,11 +95,11 @@ def extract_dictionary(reviews, word_dict, ind=0):
 
     # Comment out to leave stop words in
     # Comment out also in for loop
-    stop_words = get_stop_words()
+    # stop_words = get_stop_words()
 
     for review in reviews:
         for word in review.split():
-            if word not in word_dict and word not in stop_words:
+            if word not in word_dict: # and word not in stop_words:
                 word_dict[word] = ind
                 ind += 1
 
@@ -172,7 +172,7 @@ def normalized_wf_feature_matrix(hm, pos_list, neg_list):
 
     return feature_matrix
 
-def now():
+#def now():
 
 def tf_idf_feature_matrix(hm, pos_list, neg_list):
 # Reads the set of unique words to generate a matrix of normalized word frequency which is the number
@@ -243,8 +243,8 @@ def get_split_binary_data(hm, pos_list, neg_list, pos_test, neg_test):
     for i in range(len(neg_test)):
         y_test.append(-1)
 
-    X_train = bag_of_words_feature_matrix(hm, pos_list, neg_list)
-    X_test = bag_of_words_feature_matrix(hm, pos_test, neg_test)
+    X_train = tf_idf_feature_matrix(hm, pos_list, neg_list)
+    X_test = tf_idf_feature_matrix(hm, pos_test, neg_test)
 
     Y_train = np.array(y_train)
     Y_test = np.array(y_test)
