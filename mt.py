@@ -172,8 +172,6 @@ def normalized_wf_feature_matrix(hm, pos_list, neg_list):
 
     return feature_matrix
 
-#def now():
-
 def tf_idf_feature_matrix(hm, pos_list, neg_list):
 # Reads the set of unique words to generate a matrix of normalized word frequency which is the number
 # Of times a word occurs divided by the length of the review
