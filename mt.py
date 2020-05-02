@@ -141,7 +141,7 @@ def bow(hm, fm, l, index=0):
     Allows us to have one for loop for
     both sets
     """
-
+    #for every unique word from the dictionary present in the review set value for it to 1
     for review in l:
         for word in review.split(" "):
             if word in hm:
@@ -157,21 +157,22 @@ def normalizedWfFm(hm, pos_list, neg_list):
     Returns:
     a matrix of size (number of reviews * number of words)
     """
-
+    
     feature_matrix = np.zeros((len(pos_list) + len(neg_list), len(hm)))
     index = 0
+    #computing the frequency fo reach unique word in the review
     for i in range(len(pos_list)):
         wordCount = 0
         for word in pos_list[i].split(" "):
             wordCount += 1
             if word in hm:
                 feature_matrix[i][hm[word]] += 1
-
+        #normalizing the score by dividing by the review word count
         for j in range(len(pos_list[i].split())):
             feature_matrix[i][j] /= wordCount
 
         index = i
-
+    #doing the same thing as above, but for the negative reviews
     for i in range(len(neg_list)):
         wordCount = 0
         for word in neg_list[i].split(" "):
@@ -193,12 +194,14 @@ def tfIdfFm(hm, pos_list, neg_list):
     Returns:
     a matrix of size (number of reviews * number of words)
     """
-
+    # numpy array for the feature matrix
     feature_matrix = np.zeros((len(pos_list) + len(neg_list), len(hm)))
+    # Positive and Negative reviews
     N = REVIEWS * 2
+    # numpy array for calulcating term frequency.
     tf = np.zeros((len(pos_list) + len(neg_list), len(hm)))
     df_dict = {}
-
+    #preprocessing tf and df values for positive list
     for i in range(len(pos_list)):
         for word in pos_list[i].split(" "):
             if word in hm:
@@ -210,7 +213,7 @@ def tfIdfFm(hm, pos_list, neg_list):
                         df_dict[word] += 1
                 else:
                     tf[i][hm[word]] += 1
-
+    #preprocessing tf and df for negative list
     for i in range(len(neg_list)):
         for word in neg_list[i].split(" "):
             if word in hm:
@@ -222,6 +225,7 @@ def tfIdfFm(hm, pos_list, neg_list):
                         df_dict[word] += 1
                  else:
                     tf[i+len(pos_list)][hm[word]] +=  1
+    #computing tf-idf for positive and negative lists
     visited = []
     for i in range(len(pos_list)):
         for word in pos_list[i].split(" "):
@@ -245,16 +249,17 @@ def getSplitData(hm, pos_list, neg_list, pos_test, neg_test):
     """
     y_train = []
     y_test = []
+    # Setting labels for positive and negative data
     for i in range(REVIEWS):
         y_train.append(1)
         y_test.append(1)
     for i in range(REVIEWS):
         y_train.append(-1)
         y_test.append(-1)
-
+    #Change the feature matrix name here to choose which feature to use
     X_train = tfIdfFm(hm, pos_list, neg_list)
     X_test = tfIdfFm(hm, pos_test, neg_test)
-
+    #converting the list to a numpy array
     Y_train = np.array(y_train)
     Y_test = np.array(y_test)
     return (X_train, Y_train, X_test, Y_test, hm)
