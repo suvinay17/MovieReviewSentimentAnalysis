@@ -14,7 +14,7 @@ import os
 
 # Number of reviews to perform the
 # experiment on
-REVIEWS = 250
+REVIEWS = 2500
 
 def getData(folder_path):
     """
