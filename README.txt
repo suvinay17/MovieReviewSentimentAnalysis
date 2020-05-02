@@ -26,18 +26,18 @@ Changing Parameters:
     bowFm() (bag of words feature matrix),
     tdIdfFm() (tf-idf feature_matrix) or
     normalizedWfFm() (normalized word frequency feature matrix) in
-    getSplitData() on lines 255 and 256 in in mt.py when passing in
+    getSplitData() on lines 260 and 261 in in mt.py when passing in
     the training and testing data
 
 - To remove or keep  stop words, in main.py,
-    Comment out which the unwanted if-statement on line 102
-    Change the line to say this: 
+    Comment out a section if-statement on line 116 in mt.py
+    Change the line in the method getDictNoSw() to say this: 
     if word not in word_dict : #and word not in stop_words:
 
 - To remove proper nouns from the review,
     use getDataNoCaps() instead of getData() 
     in main.py. Simply comment out the four lines of code
-    which use getData from lines 7 to 10 or lines 13 to 16
+    which use getData from lines 7 to 10 or lines 14 to 17
     
 
 - To run quadratic kernel, on line 56, change the setting
