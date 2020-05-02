@@ -26,7 +26,7 @@ Changing Parameters:
     bowFm() (bag of words feature matrix),
     tdIdfFm() (tf-idf feature_matrix) or
     normalizedWfFm() (normalized word frequency feature matrix) in
-    getSplitData() when passing in
+    getSplitData() on lines 255 and 256 in in mt.py when passing in
     the training and testing data
 
 - To remove or keep  stop words, in main.py,
@@ -35,12 +35,11 @@ Changing Parameters:
 - To remove proper nouns from the review,
     use getDataNoCaps() instead of getData() 
     in main.py. Simply comment out the four lines of code
-    which use extract_data
+    which use getData from lines 7 to 10 or lines 13 to 16
     
-- To run cross- validation for linear kernel
 
 - To run quadratic kernel, on line 56, change the setting
     to quadratic instead of linear
 
 - To change the number of reviews the experiment
-is run on changes REVIEWS in mt.py
+is run on changes REVIEWS in mt.py on line 17

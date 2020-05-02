@@ -121,6 +121,8 @@ def getDictNoSw(reviews, word_dict, ind=0):
 
 def getSw():
     return [word[:-1] for word in open("stopwords.txt")]
+    # Stop words gotten from:
+    # https://www.ranks.nl/stopwords
 
 def bowFm(hm, pos_list, neg_list):
     """
@@ -255,7 +257,6 @@ def getSplitData(hm, pos_list, neg_list, pos_test, neg_test):
 
     Y_train = np.array(y_train)
     Y_test = np.array(y_test)
-    #print(type(Y_test))
     return (X_train, Y_train, X_test, Y_test, hm)
 
 def cvPerformance(clf, X, y, k=5, metric="accuracy"):
