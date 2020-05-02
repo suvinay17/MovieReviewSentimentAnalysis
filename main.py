@@ -2,14 +2,14 @@
 from mt import *
 
 # Comment out which kind of data extraction we want
-# First one does not remove names
+# First one does not proper nouns
 
 pos_train = getData("data/train/pos")
 neg_train = getData("data/train/neg")
 pos_test = getData("data/test/pos")
 neg_test = getData("data/test/neg")
 
-# This one removes names of people
+# This one removes proper nouns
 """
 pos_train= getDataNoCaps("data/train/pos")
 neg_train = getDataNoCaps("data/train/neg")
