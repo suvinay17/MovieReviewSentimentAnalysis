@@ -7,19 +7,16 @@ from sklearn.svm import SVC, LinearSVC
 from sklearn.model_selection import StratifiedKFold, GridSearchCV
 from sklearn import metrics
 from sklearn.multiclass import OneVsOneClassifier
-from matplotlib import pyplot as plt
-import string
-import itertools
 import glob
-import os
 import re
 import math
+import os
 
-# Number of reviews
-# For testing purposes mainly
-REVIEWS = 2500
+# Number of reviews to perform the
+# experiment on
+REVIEWS = 250
 
-def extract_data(folder_path):
+def getData(folder_path):
     """
     this method extracts data from a folder, reading each file,
     preprocessing it by getting rid of nonewords and appending
@@ -42,7 +39,7 @@ def extract_data(folder_path):
 
     return reviews[:REVIEWS]
 
-def extract_data_no_caps(folder_path):
+def getDataNoCaps(folder_path):
     """
     this method does the same job as extract_data() but
     also removes words with a capital so as to remove
@@ -83,7 +80,7 @@ def extract_data_no_caps(folder_path):
 
     return output[:REVIEWS]
 
-def extract_dictionary(reviews, word_dict, ind=0):
+def getDict(reviews, word_dict, ind=0):
     """
     Reads list of distinct words
     mapping from each distinct word to its index .
@@ -93,41 +90,55 @@ def extract_dictionary(reviews, word_dict, ind=0):
 
     """
 
-    # Comment out to leave stop words in
-    # Comment out also in for loop
-    # stop_words = get_stop_words()
-
     for review in reviews:
         for word in review.split():
-            if word not in word_dict: # and word not in stop_words:
+            if word not in word_dict: 
                 word_dict[word] = ind
                 ind += 1
 
     return (word_dict, ind)
 
-def get_stop_words():
+def getDictNoSw(reviews, word_dict, ind=0):
+    """
+    Reads list of distinct words
+    mapping from each distinct word to its index.
+    Does not consider stop words
+    Returns:
+        a dictionary of distinct words that maps each distinct word
+        to a unique index corresponding to when it was first found
+
+    """
+
+    stop_words = get_stop_words()
+
+    for review in reviews:
+        for word in review.split():
+            if word not in word_dict and word not in stop_words:
+                word_dict[word] = ind
+                ind += 1
+
+    return (word_dict, ind)
+
+def getSw():
     return [word[:-1] for word in open("stopwords.txt")]
 
-def select_classifier(penalty='l2', c=1.0, degree=1, r=0.0, class_weight='balanced'):
-# Refer to https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html
-# Return a linear svm classifier based on the given
-# penalty function and regularization parameter c.
-    if degree == 1:
-        return SVC(C=c, kernel='linear', degree=degree, class_weight=class_weight)
-    else:
-        return SVC(C=c, kernel='poly', degree=degree, class_weight=class_weight, coef0=r)
-
-def bag_of_words_feature_matrix(hm, pos_list, neg_list):
-# Reads the set of unique words to generate a matrix of {1, 0} feature vectors for each review.
-# The resulting feature matrix should be of dimension (number of reviews, number of words).
-# Returns:
-# a matrix of size (number of reviews * number of words) (for TRAIN data set)
-
-    # refer to https://docs.scipy.org/doc/numpy/reference/generated/numpy.zeros.html
+def bowFm(hm, pos_list, neg_list):
+    """
+    Reads the set of unique words to generate a matrix of 
+    {1, 0} feature vectors for each review.
+    The resulting feature matrix should be of dimension (number of reviews, number of words).
+    Returns:
+    a matrix of size (number of reviews * number of words) (for TRAIN data set)
+    """
     feature_matrix = bow(hm, np.zeros((len(pos_list) + len(neg_list), len(hm))), pos_list)
     return bow(hm, feature_matrix, neg_list, index=len(pos_list))
 
 def bow(hm, fm, l, index=0):
+    """
+    Bag of words helper methods
+    Allows us to have one for loop for
+    both sets
+    """
 
     for review in l:
         for word in review.split(" "):
@@ -136,16 +147,16 @@ def bow(hm, fm, l, index=0):
         index += 1
     return fm
 
-def normalized_wf_feature_matrix(hm, pos_list, neg_list):
-# Reads the set of unique words to generate a matrix of normalized word frequency which is the number
-# Of times a word occurs divided by the length of the review
-# The resulting feature matrix should be of dimension (number of reviews, number of words).
-# Returns:
-# a matrix of size (number of reviews * number of words)
+def normalizedWfFm(hm, pos_list, neg_list):
+    """
+    Reads the set of unique words to generate a matrix of normalized word frequency which is the number
+    Of times a word occurs divided by the length of the review
+    The resulting feature matrix should be of dimension (number of reviews, number of words).
+    Returns:
+    a matrix of size (number of reviews * number of words)
+    """
 
     feature_matrix = np.zeros((len(pos_list) + len(neg_list), len(hm)))
-    # refer to https://docs.scipy.org/doc/numpy/reference/generated/numpy.zeros.html
-    # testCount = 0
     index = 0
     for i in range(len(pos_list)):
         wordCount = 0
@@ -172,16 +183,16 @@ def normalized_wf_feature_matrix(hm, pos_list, neg_list):
 
     return feature_matrix
 
-def tf_idf_feature_matrix(hm, pos_list, neg_list):
-# Reads the set of unique words to generate a matrix of normalized word frequency which is the number
-# Of times a word occurs divided by the length of the review
-# The resulting feature matrix should be of dimension (number of reviews, number of words).
-# Returns:
-# a matrix of size (number of reviews * number of words)
+def tfIdfFm(hm, pos_list, neg_list):
+    """
+    Reads the set of unique words to generate a matrix of normalized word frequency which is the number
+    Of times a word occurs divided by the length of the review
+    The resulting feature matrix should be of dimension (number of reviews, number of words).
+    Returns:
+    a matrix of size (number of reviews * number of words)
+    """
 
     feature_matrix = np.zeros((len(pos_list) + len(neg_list), len(hm)))
-    # refer to https://docs.scipy.org/doc/numpy/reference/generated/numpy.zeros.html
-    # testCount = 0
     N = REVIEWS * 2
     tf = np.zeros((len(pos_list) + len(neg_list), len(hm)))
     df_dict = {}
@@ -224,7 +235,7 @@ def tf_idf_feature_matrix(hm, pos_list, neg_list):
                     feature_matrix[i+len(pos_list)][hm[word]] = tf[i+len(pos_list)][hm[word]]*math.log2(N/df_dict[word])
     return feature_matrix
 
-def get_split_binary_data(hm, pos_list, neg_list, pos_test, neg_test):
+def getSplitData(hm, pos_list, neg_list, pos_test, neg_test):
     """
     Reads in the data and returns it using
     extract_dictionary and bag_of_words_feature_matrix split into training and test sets.
@@ -232,24 +243,22 @@ def get_split_binary_data(hm, pos_list, neg_list, pos_test, neg_test):
     """
     y_train = []
     y_test = []
-    for i in range(len(pos_list)):
+    for i in range(REVIEWS):
         y_train.append(1)
-    for i in range( len(neg_list)):
-        y_train.append(-1)
-    for i in range(len(pos_test)):
         y_test.append(1)
-    for i in range(len(neg_test)):
+    for i in range(REVIEWS):
+        y_train.append(-1)
         y_test.append(-1)
 
-    X_train = tf_idf_feature_matrix(hm, pos_list, neg_list)
-    X_test = tf_idf_feature_matrix(hm, pos_test, neg_test)
+    X_train = tfIdfFm(hm, pos_list, neg_list)
+    X_test = tfIdfFm(hm, pos_test, neg_test)
 
     Y_train = np.array(y_train)
     Y_test = np.array(y_test)
     #print(type(Y_test))
     return (X_train, Y_train, X_test, Y_test, hm)
 
-def cv_performance(clf, X, y, k=5, metric="accuracy"):
+def cvPerformance(clf, X, y, k=5, metric="accuracy"):
     """
     Splits the data X and the labels y into k-folds and runs k-fold
     cross-validation: for each fold i in 1...k, trains a classifier on
@@ -287,7 +296,7 @@ def cv_performance(clf, X, y, k=5, metric="accuracy"):
     # And return the average performance across all fold splits.
     return np.array(scores).mean()
 
-def select_param_linear(X, y, k=5, metric="accuracy", C_range = [], penalty='l2'):
+def selectLinearParam(X, y, k=5, metric="accuracy", C_range = [], penalty='l2'):
     """
     Sweeps different settings for the hyperparameter of a linear-kernel SVM,
     calculating the k-fold CV performance for each setting on X, y.
@@ -316,7 +325,7 @@ def select_param_linear(X, y, k=5, metric="accuracy", C_range = [], penalty='l2'
 
     return best_c, max_score
 
-def select_param_quadratic(X, y, k=5, metric="accuracy", param_range=[]):
+def selectQuadParam(X, y, k=5, metric="accuracy", param_range=[]):
     """
         Sweeps different settings for the hyperparameters of an quadratic-kernel SVM,
         calculating the k-fold CV performance for each setting on X, y.
@@ -352,7 +361,7 @@ def select_param_quadratic(X, y, k=5, metric="accuracy", param_range=[]):
 
     return best_c, best_r, max_score
 
-def select_svc_linear(X, y, k=5, metric="accuracy", C_range = [], class_weight='balanced'):
+def selectSvcLinear(X, y, k=5, metric="accuracy", C_range = [], class_weight='balanced'):
     max_score = -1
     best_c = -1
 
