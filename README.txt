@@ -31,6 +31,8 @@ Changing Parameters:
 
 - To remove or keep  stop words, in main.py,
     Comment out which the unwanted if-statement on line 102
+    Change the line to say this: 
+    if word not in word_dict : #and word not in stop_words:
 
 - To remove proper nouns from the review,
     use getDataNoCaps() instead of getData() 
@@ -39,7 +41,9 @@ Changing Parameters:
     
 
 - To run quadratic kernel, on line 56, change the setting
-    to quadratic instead of linear
+    to "poly" instead of linear, change Degree to 2, and add(and an r value coef0=1)
 
 - To change the number of reviews the experiment
 is run on changes REVIEWS in mt.py on line 17
+REVIEWS represent the number of positive and negative reviews to be chosen.
+REVIEWS = 2500 means, running the experiment on 5000 movie reviews.
